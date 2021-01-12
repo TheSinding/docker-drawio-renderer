@@ -9,10 +9,12 @@ from flask import Flask,request,send_file,g
 from flask.logging import create_logger
 from flask_expects_json import expects_json
 from flask_redoc import Redoc
+from flask_cors import CORS
 import tempfile
 import os, subprocess, re, shutil, sys
 
 app = Flask(__name__)
+CORS(app)
 log = create_logger(app)
 
 supported_formats = ['png', 'jpeg', 'svg', 'pdf']
@@ -178,6 +180,7 @@ def convert_file():
         return {'error': f"Not Acceptable; must 'Accept:' one of: {list(content_types.keys())}"}, 406
 
     fmt = content_types[best]
+    log.info("Using format %s", fmt);
     return convert_common(req, source, fmt)
 
 if __name__ == '__main__':
